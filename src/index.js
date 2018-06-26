@@ -166,9 +166,16 @@ export default {
         this.connectorPromise = this.connectorPromise
             .then(async connector => {
                 if (!connector) {
-                    connector = new SauceLabsConnector(process.env['SAUCE_USERNAME'], process.env['SAUCE_ACCESS_KEY'], {
+                    const connectorOptions = {
                         connectorLogging: false
-                    });
+                    };
+
+                    const noSSLBumpDomains = process.env['SAUCE_NO_SSL_BUMP_DOMAINS'];
+
+                    if (noSSLBumpDomains)
+                        connectorOptions.noSSLBumpDomains = noSSLBumpDomains.split(',');
+
+                    connector = new SauceLabsConnector(process.env['SAUCE_USERNAME'], process.env['SAUCE_ACCESS_KEY'], connectorOptions);
 
                     await connector.connect();
                 }
@@ -342,10 +349,17 @@ export default {
             WAIT_FOR_FREE_MACHINES_MAX_ATTEMPT_COUNT
         );
 
-        var newBrowser = await connector.startBrowser(capabilities, pageUrl, {
+        const browserOptions = {
             jobName: process.env['SAUCE_JOB'],
             build:   process.env['SAUCE_BUILD']
-        });
+        };
+
+        const tags = process.env['SAUCE_TAGS'];
+
+        if (tags)
+            browserOptions.tags = tags.split(',');
+
+        var newBrowser = await connector.startBrowser(capabilities, pageUrl, browserOptions);
 
         this.openedBrowsers[id] = newBrowser;
 
