@@ -21,7 +21,7 @@ describe('Browser names', function () {
             .getBrowserList()
             .then(function (list) {
                 var commonBrowsers = [
-                    'Chrome@51.0:OS X 10.9',
+                    'Chrome@51.0:OS X 10.10',
                     'Firefox@45.0:Linux',
                     'Safari@9.0:OS X 10.11',
                     'Internet Explorer@9.0:Windows 7',
@@ -31,7 +31,7 @@ describe('Browser names', function () {
                     'Samsung Galaxy S4 Emulator@4.4',
                     'Android Emulator Phone@4.4',
                     'iPad Simulator@9.3',
-                    'iPhone Simulator@9.2'
+                    'iPhone Simulator@9.3'
                 ];
 
                 var areBrowsersInList = commonBrowsers
@@ -62,13 +62,13 @@ describe('Browser names', function () {
         var expectedResults = [
             true,
             true,
+            false,
             true,
             true,
             true,
             true,
             true,
-            true,
-            true,
+            false,
             true,
             false,
             false

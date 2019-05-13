@@ -4,6 +4,7 @@ import requestAPI from 'request';
 import Promise from 'pinkie';
 import pify from 'pify';
 import { flatten, find, assign } from 'lodash';
+import * as fs from 'fs';
 
 const AUTH_FAILED_ERROR = 'Authentication failed. Please assign the correct username and access key ' +
                           'to the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables.';
@@ -16,10 +17,11 @@ const MAX_TUNNEL_CONNECT_RETRY_COUNT           = 3;
 const AUTOMATION_APIS = ['selenium', 'appium', 'selendroid'];
 
 const MAC_OS_MAP = {
-    'OS X El Capitan':    'OS X 10.11',
-    'OS X Yosemite':      'OS X 10.10',
-    'OS X Mavericks':     'OS X 10.9',
-    'OS X Mountain Lion': 'OS X 10.8'
+    'macOS Mojave':      'macOS 10.14',
+    'macOS High Sierra': 'macOS 10.13',
+    'macOS Sierra':      'macOS 10.12',
+    'OS X El Capitan':   'OS X 10.11',
+    'OS X Yosemite':     'OS X 10.10'
 };
 
 const promisify = fn => pify(fn, Promise);
@@ -149,6 +151,14 @@ function getAppiumBrowserName (platformInfo) {
         return 'chrome';
 
     return 'Browser';
+}
+
+function getAdditionalConfig (filename) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(filename, 'utf8', (err, data) =>
+            err ? reject(err) : resolve(JSON.parse(data))
+        );
+    });
 }
 
 export default {
@@ -313,7 +323,8 @@ export default {
 
         if (query.platform !== 'any')
             capabilities.platform = query.platform;
-
+        if (process.env['SAUCE_SCREEN_RESOLUTION'])
+            capabilities.screenResolution = process.env['SAUCE_SCREEN_RESOLUTION'];
         return capabilities;
     },
 
