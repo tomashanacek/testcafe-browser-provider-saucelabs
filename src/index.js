@@ -4,7 +4,6 @@ import requestAPI from 'request';
 import Promise from 'pinkie';
 import pify from 'pify';
 import { flatten, find, assign } from 'lodash';
-import * as fs from 'fs';
 
 const AUTH_FAILED_ERROR = 'Authentication failed. Please assign the correct username and access key ' +
                           'to the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables.';
@@ -151,14 +150,6 @@ function getAppiumBrowserName (platformInfo) {
         return 'chrome';
 
     return 'Browser';
-}
-
-function getAdditionalConfig (filename) {
-    return new Promise((resolve, reject) => {
-        fs.readFile(filename, 'utf8', (err, data) =>
-            err ? reject(err) : resolve(JSON.parse(data))
-        );
-    });
 }
 
 export default {
